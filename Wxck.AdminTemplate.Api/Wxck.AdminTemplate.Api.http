@@ -1,0 +1,6 @@
+@Wxck.AdminTemplate.Api_HostAddress = http://localhost:5205
+
+GET {{Wxck.AdminTemplate.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
