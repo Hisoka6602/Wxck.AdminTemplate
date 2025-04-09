@@ -13,18 +13,18 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
 
     public class MemoryCacheRepositoryBase<T, TContext> : RepositoryBase<T, TContext>, IMemoryCacheRepository<T> where T : class
     where TContext : DbContext {
-        private new readonly IDbContextFactory<TContext> _contextFactory;
-        public readonly IMemoryCache _cache;
+        private readonly IDbContextFactory<TContext> _contextFactory;
+        public readonly IMemoryCache Cache;
 
         public MemoryCacheRepositoryBase(IDbContextFactory<TContext> contextFactory, IMemoryCache cache) : base(contextFactory, cache) {
             _contextFactory = contextFactory;
-            _cache = cache;
+            Cache = cache;
         }
 
         public async Task<List<T>?> MemoryCacheData() {
             try {
                 var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
-                return await _cache.GetOrCreateAsync(name, async entry => {
+                return await Cache.GetOrCreateAsync(name!, async entry => {
                     entry.SlidingExpiration = TimeSpan.FromMinutes(5);
                     await using var concardContext = await _contextFactory.CreateDbContextAsync();
                     var dbSet = concardContext?.Set<T>();
@@ -49,7 +49,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
         public async Task<bool> ClearCache() {
             var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
             try {
-                _cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
 
                 return await Task.FromResult(true);
             }
@@ -64,7 +64,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             var insert = await base.Insert(entity, token);
             if (insert) {
                 var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
-                _cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
 
                 EventAggregator.Instance.Publish(new MemoryTableChangedEvent {
                     ChangedAt = DateTime.Now,
@@ -80,7 +80,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
                 var insert = await base.Insert(entity, token);
                 if (insert) {
                     var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
-                    _cache.Remove(name ?? string.Empty);
+                    Cache.Remove(name ?? string.Empty);
 
                     EventAggregator.Instance.Publish(new MemoryTableChangedEvent {
                         ChangedAt = DateTime.Now,
@@ -97,7 +97,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             var insertRange = await base.InsertRange(entities, token);
             if (insertRange) {
                 var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
-                _cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
                 EventAggregator.Instance.Publish(new MemoryTableChangedEvent {
                     ChangedAt = DateTime.Now,
                     TableName = name ?? string.Empty,
@@ -112,8 +112,8 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             var update = await base.Update(entity, token);
             if (update) {
                 var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
-                _cache.Remove(name ?? string.Empty);
-                _cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
                 EventAggregator.Instance.Publish(new MemoryTableChangedEvent {
                     ChangedAt = DateTime.Now,
                     TableName = name ?? string.Empty,
@@ -127,8 +127,8 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             var insertOrUpdate = await base.InsertOrUpdate(entity, token);
             if (insertOrUpdate) {
                 var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
-                _cache.Remove(name ?? string.Empty);
-                _cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
                 EventAggregator.Instance.Publish(new MemoryTableChangedEvent {
                     ChangedAt = DateTime.Now,
                     TableName = name ?? string.Empty,
@@ -143,8 +143,8 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             var insertOrUpdate = await base.InsertOrUpdate(entity, excludeColumns, token);
             if (insertOrUpdate) {
                 var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
-                _cache.Remove(name ?? string.Empty);
-                _cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
                 EventAggregator.Instance.Publish(new MemoryTableChangedEvent {
                     ChangedAt = DateTime.Now,
                     TableName = name ?? string.Empty,
@@ -159,8 +159,8 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             var insertOrUpdateRange = await base.InsertOrUpdateRange(entities, token);
             if (insertOrUpdateRange) {
                 var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
-                _cache.Remove(name ?? string.Empty);
-                _cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
                 EventAggregator.Instance.Publish(new MemoryTableChangedEvent {
                     ChangedAt = DateTime.Now,
                     TableName = name ?? string.Empty,
@@ -176,8 +176,8 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             var insertOrUpdateRange = await base.InsertOrUpdateRange(entities, excludeColumns, token);
             if (insertOrUpdateRange) {
                 var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
-                _cache.Remove(name ?? string.Empty);
-                _cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
                 EventAggregator.Instance.Publish(new MemoryTableChangedEvent {
                     ChangedAt = DateTime.Now,
                     TableName = name ?? string.Empty,
@@ -191,8 +191,8 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             var updateRange = await base.UpdateRange(entities, token);
             if (updateRange) {
                 var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
-                _cache.Remove(name ?? string.Empty);
-                _cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
                 EventAggregator.Instance.Publish(new MemoryTableChangedEvent {
                     ChangedAt = DateTime.Now,
                     TableName = name ?? string.Empty,
@@ -208,8 +208,8 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             var updateRange = await base.UpdateRange(entities, excludeColumns, token);
             if (updateRange) {
                 var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
-                _cache.Remove(name ?? string.Empty);
-                _cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
                 EventAggregator.Instance.Publish(new MemoryTableChangedEvent {
                     ChangedAt = DateTime.Now,
                     TableName = name ?? string.Empty,
@@ -223,8 +223,8 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             var delete = await base.Delete(entity, token);
             if (delete) {
                 var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
-                _cache.Remove(name ?? string.Empty);
-                _cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
                 EventAggregator.Instance.Publish(new MemoryTableChangedEvent {
                     ChangedAt = DateTime.Now,
                     TableName = name ?? string.Empty,
@@ -238,8 +238,8 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             var delete = await base.DeleteRange(entities, token);
             if (delete) {
                 var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
-                _cache.Remove(name ?? string.Empty);
-                _cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
                 EventAggregator.Instance.Publish(new MemoryTableChangedEvent {
                     ChangedAt = DateTime.Now,
                     TableName = name ?? string.Empty,
@@ -249,12 +249,13 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             return delete;
         }
 
+        [Obsolete("Obsolete")]
         public new async Task<int> DeleteCount(int count, CancellationToken token) {
             var deleteCount = await base.DeleteCount(count, token);
             if (deleteCount > 0) {
                 var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
-                _cache.Remove(name ?? string.Empty);
-                _cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
                 EventAggregator.Instance.Publish(new MemoryTableChangedEvent {
                     ChangedAt = DateTime.Now,
                     TableName = name ?? string.Empty,
@@ -265,12 +266,13 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             return deleteCount;
         }
 
+        [Obsolete("Obsolete")]
         public new async Task<int> DeleteCount(int count, Expression<Func<T, bool>> @where, CancellationToken token) {
             var deleteCount = await base.DeleteCount(count, @where, token);
             if (deleteCount > 0) {
                 var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
-                _cache.Remove(name ?? string.Empty);
-                _cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
                 EventAggregator.Instance.Publish(new MemoryTableChangedEvent {
                     ChangedAt = DateTime.Now,
                     TableName = name ?? string.Empty,
@@ -285,8 +287,8 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             var syncEntities = await base.SyncEntities(entities, token);
             if (syncEntities) {
                 var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
-                _cache.Remove(name ?? string.Empty);
-                _cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
+                Cache.Remove(name ?? string.Empty);
                 EventAggregator.Instance.Publish(new MemoryTableChangedEvent {
                     ChangedAt = DateTime.Now,
                     TableName = name ?? string.Empty,

@@ -26,8 +26,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddHttpContextAccessor();
-HttpContextHelper.HttpContextAccessor = builder.Services.BuildServiceProvider().GetService<IHttpContextAccessor>();
-
 builder.WebHost.UseKestrel((context, options) => {
     // 设置应用服务器 Kestrel 请求体最大为50MB
     options.Limits.MaxRequestBodySize = 31457280000;
@@ -216,5 +214,8 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+HttpContextHelper.HttpContextAccessor = app.Services.GetRequiredService<IHttpContextAccessor>();
+
 //MessageHub
 app.Run();

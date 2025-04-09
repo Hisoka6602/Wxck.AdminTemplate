@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using System.Linq;
 using System.Diagnostics;
@@ -8,7 +9,6 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Wxck.AdminTemplate.Analyzer.Descriptors;
 
 #pragma warning disable RS1005
 
@@ -35,7 +35,7 @@ namespace Wxck.AdminTemplate.Analyzer.Analyzers {
             defaultSeverity: DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule, AttributeRule);
 
         public override void Initialize(AnalysisContext context) {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
@@ -51,18 +51,24 @@ namespace Wxck.AdminTemplate.Analyzer.Analyzers {
                 return;
 
             // 获取文件路径
-            var path = namedType.Locations.FirstOrDefault()?.SourceTree?.FilePath ?? "";
+            var path = namedType.Locations.FirstOrDefault()?.SourceTree?.FilePath;
+            if (string.IsNullOrEmpty(path))
+                return;
 
-            // 判断是否在 Entities 路径下
-            if (path.Contains("Entities")) {
-                // 检查命名是否符合要求
+            // 分割路径目录，用于精确判断目录名
+            var pathParts = path.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+            bool isInEntities = pathParts.Any(p => string.Equals(p, "Entities", StringComparison.OrdinalIgnoreCase));
+            bool isInAttributes = pathParts.Any(p => string.Equals(p, "Attributes", StringComparison.OrdinalIgnoreCase));
+
+            if (isInEntities) {
                 if (!namedType.Name.EndsWith("InfoModel")) {
                     var diagnostic = Diagnostic.Create(Rule, namedType.Locations[0], namedType.Name);
                     context.ReportDiagnostic(diagnostic);
                 }
             }
-            // 属性类检查
-            if (path.Contains("Attributes")) {
+
+            if (isInAttributes) {
                 var isAttribute = namedType.BaseType?.ToDisplayString() == "System.Attribute";
                 var nameCorrect = namedType.Name.EndsWith("Attribute");
 

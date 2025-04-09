@@ -2,7 +2,7 @@
 
 namespace Wxck.AdminTemplate.Domain.Repositories {
 
-    public interface IBackupInsert<T> where T : class {
+    public interface IBackupInsertRepository<T> where T : class {
 
         /// <summary>
         /// 备份式插入

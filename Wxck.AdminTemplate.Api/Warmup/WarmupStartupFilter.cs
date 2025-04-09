@@ -22,24 +22,22 @@
 
         private async Task WarmupMemoryCacheRepositories() {
             foreach (var descriptor in _serviceCollection) {
-                if (/*descriptor.ServiceType.IsGenericType &&*/
-                    descriptor.ServiceType.Name.Contains("Repository")) {
+                if (descriptor.ServiceType.Name.Contains("Repository")) {
                     try {
                         // 解析服务实例
                         var repository = _serviceProvider.GetRequiredService(descriptor.ServiceType);
-                        {
-                            // 调用 MemoryCacheData 方法
-                            var method = repository.GetType().GetMethod("MemoryCacheData");
-                            if (method != null) {
-                                var task = (Task)method.Invoke(repository, null);
-                                if (task != null) {
-                                    await task;
-                                }
-                            }
+
+                        // 获取 MemoryCacheData 方法
+                        var method = repository.GetType().GetMethod("MemoryCacheData");
+
+                        // 如果方法存在并返回一个 Task
+                        if (method != null && method.Invoke(repository, null) is Task task) {
+                            await task;
                         }
                     }
                     catch (Exception ex) {
-                        NLog.LogManager.GetCurrentClassLogger().Error($"Error warming up repository {descriptor.ServiceType.FullName}: {ex.Message}");
+                        NLog.LogManager.GetCurrentClassLogger().Error(
+                            $"Error warming up repository {descriptor.ServiceType.FullName}: {ex.Message}");
                     }
                 }
             }

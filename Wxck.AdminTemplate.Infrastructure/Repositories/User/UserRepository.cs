@@ -24,9 +24,9 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories.User {
         public new async Task<List<UserInfoModel>?> MemoryCacheData() {
             try {
                 var name = typeof(UserInfoModel).GetCustomAttribute<TableAttribute>()?.Name;
-                return await _cache.GetOrCreateAsync(name, async entry => {
+                return await Cache.GetOrCreateAsync(name!, async entry => {
                     entry.SlidingExpiration = TimeSpan.FromMinutes(30);
-                    await using var concardContext = await _contextFactory.CreateDbContextAsync();
+                    await using var concardContext = await ContextFactory.CreateDbContextAsync();
                     var dbSet = concardContext?.Set<UserInfoModel>();
                     if (dbSet is null || concardContext is null) return null;
                     return await dbSet.AsNoTracking()
@@ -42,7 +42,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories.User {
 
         public async Task<KeyValuePair<bool, object>> DetailsInfo(string userCode, CancellationToken token) {
             try {
-                await using var concardContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concardContext = await ContextFactory.CreateDbContextAsync(token);
                 var dbSet = concardContext?.Set<UserInfoModel>();
                 if (dbSet is null || concardContext is null) return new KeyValuePair<bool, object>(false, "查询失败");
                 var userInfo = await dbSet.AsNoTracking()

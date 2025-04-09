@@ -21,7 +21,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories.Logs {
 
         public async Task<KeyValuePair<bool, string>> DeleteLogsBeforeDate(DateTime beforeDate, CancellationToken token = default) {
             try {
-                await using var context = await _contextFactory.CreateDbContextAsync(token);
+                await using var context = await ContextFactory.CreateDbContextAsync(token);
                 var logsToDelete = context.Set<OperationLogInfoModel>().AsNoTracking().Where(log => log.OperationTime < beforeDate);
                 context.Set<OperationLogInfoModel>().RemoveRange(logsToDelete);
                 await context.SaveChangesAsync(token);
@@ -35,7 +35,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories.Logs {
 
         public async Task<KeyValuePair<bool, string>> DeleteLogsBeforeCount(int count, CancellationToken token = default) {
             try {
-                using var context = await _contextFactory.CreateDbContextAsync(token);
+                using var context = await ContextFactory.CreateDbContextAsync(token);
                 var logsToDelete = context.Set<OperationLogInfoModel>().AsNoTracking().OrderBy(log => log.OperationTime).Take(count);
                 context.Set<OperationLogInfoModel>().RemoveRange(logsToDelete);
                 await context.SaveChangesAsync(token);
@@ -49,7 +49,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories.Logs {
 
         public async Task<KeyValuePair<bool, string>> ClearLogs(CancellationToken token = default) {
             try {
-                using var context = await _contextFactory.CreateDbContextAsync(token);
+                using var context = await ContextFactory.CreateDbContextAsync(token);
                 var allLogs = context.Set<OperationLogInfoModel>().AsNoTracking();
                 context.Set<OperationLogInfoModel>().RemoveRange(allLogs);
                 await context.SaveChangesAsync(token);

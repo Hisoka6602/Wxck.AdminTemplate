@@ -7,8 +7,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="ValueObjects\" />
 		<Folder Include="Aggregates\" />
+		<Folder Include="ValueObjects\" />
 		<Folder Include="Events\" />
 		<Folder Include="Strategies\" />
 	</ItemGroup>

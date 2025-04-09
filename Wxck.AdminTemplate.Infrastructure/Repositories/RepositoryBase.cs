@@ -11,26 +11,24 @@ using Microsoft.Extensions.Caching.Memory;
 using Wxck.AdminTemplate.Domain.Attributes;
 using Microsoft.EntityFrameworkCore.Storage;
 using Wxck.AdminTemplate.Domain.Repositories;
+using Wxck.AdminTemplate.Domain.Repositories.Logs;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Wxck.AdminTemplate.Infrastructure.Repositories {
 
     public class RepositoryBase<T, TContext> : IRepository<T> where T : class
     where TContext : DbContext {
-        public readonly IDbContextFactory<TContext> _contextFactory;
+        public readonly IDbContextFactory<TContext> ContextFactory;
         private static SemaphoreSlim _transactionSlim = new(1);
 
         public RepositoryBase(IDbContextFactory<TContext> contextFactory, IMemoryCache cache) {
-            if (contextFactory == null || cache == null) {
-                return;
-            }
-            _contextFactory = contextFactory;
+            ContextFactory = contextFactory;
         }
 
         public async Task<int> ExecuteSqlAsync([NotNull] string sql, CancellationToken token) {
             if (sql.Equals(string.Empty)) return 0;
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 return await concordContext.Database.ExecuteSqlRawAsync(sql, token);
             }
             catch (Win32Exception) {
@@ -53,7 +51,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             if (sql.Equals(string.Empty)) return null;
 
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 {
                     var dbSet = concordContext?.Set<T>();
                     if (dbSet is null) return null;
@@ -78,14 +76,14 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
         public async Task<bool> Insert([NotNull] T entity, CancellationToken token) {
             IDbContextTransaction? contextTransaction = null;
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var strategy = concordContext.Database.CreateExecutionStrategy();
                 return await strategy.ExecuteAsync(async () => {
                     await using (contextTransaction = await concordContext.Database.BeginTransactionAsync(token)) {
                         if (contextTransaction is not null) {
                             var dbSet = concordContext?.Set<T>();
-                            await dbSet.AddAsync(entity, token);
-                            await concordContext?.SaveChangesAsync(token);
+                            await dbSet!.AddAsync(entity, token);
+                            await concordContext?.SaveChangesAsync(token)!;
                             await contextTransaction.CommitAsync(token);
 
                             return true;
@@ -110,14 +108,14 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
         public async void InsertAsync([NotNull] T entity, CancellationToken token) {
             IDbContextTransaction? contextTransaction = null;
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var strategy = concordContext.Database.CreateExecutionStrategy();
                 await strategy.ExecuteAsync(async () => {
                     await using (contextTransaction = await concordContext.Database.BeginTransactionAsync(token)) {
                         if (contextTransaction is not null) {
                             var dbSet = concordContext?.Set<T>();
-                            await dbSet.AddAsync(entity, token);
-                            await concordContext?.SaveChangesAsync(token);
+                            await dbSet!.AddAsync(entity, token);
+                            await concordContext?.SaveChangesAsync(token)!;
                             await contextTransaction.CommitAsync(token);
                         }
                     }
@@ -137,7 +135,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
         public async Task<bool> InsertRange([NotNull] List<T> entitylist, CancellationToken token) {
             IDbContextTransaction? contextTransaction = null;
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var strategy = concordContext.Database.CreateExecutionStrategy();
                 return await strategy.ExecuteAsync(async () => {
                     await using (contextTransaction = await concordContext.Database.BeginTransactionAsync(token)) {
@@ -182,7 +180,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
                 var propertyInfos = typeof(T).GetProperties(
                     System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var strategy = concordContext.Database.CreateExecutionStrategy();
                 return await strategy.ExecuteAsync(async () => {
                     await using (contextTransaction = await concordContext.Database.BeginTransactionAsync(token)) {
@@ -236,7 +234,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
                 var propertyInfos = typeof(T).GetProperties(
                     System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var strategy = concordContext.Database.CreateExecutionStrategy();
                 return await strategy.ExecuteAsync(async () => {
                     await using (contextTransaction = await concordContext.Database.BeginTransactionAsync(token)) {
@@ -307,7 +305,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
 
                 var propertyInfos = typeof(T).GetProperties(
                     System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var strategy = concordContext.Database.CreateExecutionStrategy();
                 return await strategy.ExecuteAsync(async () => {
                     await using (contextTransaction = await concordContext.Database.BeginTransactionAsync(token)) {
@@ -360,7 +358,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
                 var propertyInfos = typeof(T).GetProperties(
                     System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var strategy = concordContext.Database.CreateExecutionStrategy();
                 return await strategy.ExecuteAsync(async () => {
                     await using (contextTransaction = await concordContext.Database.BeginTransactionAsync(token)) {
@@ -405,13 +403,13 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
         public async Task<bool> Update([NotNull] T entity, CancellationToken token) {
             IDbContextTransaction? contextTransaction = null;
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var strategy = concordContext.Database.CreateExecutionStrategy();
                 return await strategy.ExecuteAsync(async () => {
                     await using (contextTransaction = await concordContext.Database.BeginTransactionAsync(token)) {
                         if (contextTransaction is not null) {
                             var dbSet = concordContext?.Set<T>();
-                            dbSet.Update(entity);
+                            dbSet?.Update(entity);
                             await concordContext?.SaveChangesAsync(token)!;
                             await contextTransaction.CommitAsync(token);
 
@@ -438,7 +436,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
         public async Task<bool> UpdateRange(List<T> entities, CancellationToken token) {
             IDbContextTransaction? contextTransaction = null;
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var strategy = concordContext.Database.CreateExecutionStrategy();
                 return await strategy.ExecuteAsync(async () => {
                     await using (contextTransaction = await concordContext.Database.BeginTransactionAsync(token)) {
@@ -482,7 +480,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
                     exclude = memberInfos.Select(p => p.Name).ToList();
                 }
 
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var strategy = concordContext.Database.CreateExecutionStrategy();
                 return await strategy.ExecuteAsync(async () => {
                     await using (contextTransaction = await concordContext.Database.BeginTransactionAsync(token)) {
@@ -519,7 +517,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
         public async Task<bool> Delete([NotNull] T entity, CancellationToken token) {
             IDbContextTransaction? contextTransaction = null;
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var strategy = concordContext.Database.CreateExecutionStrategy();
                 return await strategy.ExecuteAsync(async () => {
                     await using (contextTransaction = await concordContext.Database.BeginTransactionAsync(token)) {
@@ -549,7 +547,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
 
         public async Task<bool> DeleteRange([NotNull] List<T> entities, CancellationToken token) {
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var dbSet = concordContext?.Set<T>();
                 if (dbSet is not null && concordContext is not null) {
                     await concordContext.BulkDeleteAsync(entities, cancellationToken: token);
@@ -575,7 +573,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
         [Obsolete("Obsolete")]
         public async Task<int> DeleteCount(int count, CancellationToken token) {
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 {
                     var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
                     var dbSet = concordContext?.Set<T>();
@@ -603,7 +601,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
         [Obsolete("Obsolete")]
         public async Task<int> DeleteCount(int count, Expression<Func<T, bool>> @where, CancellationToken token) {
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 {
                     var name = typeof(T).GetCustomAttribute<TableAttribute>()?.Name;
                     var dbSet = concordContext?.Set<T>();
@@ -632,7 +630,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             pageIndex = pageIndex < 0 ? 0 : pageIndex;
             pageSize = pageSize > 1000 ? 1000 : pageSize;
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var dbSet = concordContext?.Set<T>();
                 if (dbSet is null) return null;
                 return await dbSet.AsNoTracking()?.Where(where)
@@ -649,11 +647,12 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             return null;
         }
 
-        public async Task<List<T>?> Select<TOrder>([NotNull] Expression<Func<T, bool>> @where, Expression<Func<T, TOrder>> order, int pageIndex, int pageSize, CancellationToken token) {
+        public async Task<List<T>?> Select<TOrder>([NotNull] Expression<Func<T, bool>> @where,
+            [NotNull] Expression<Func<T, TOrder>> order, int pageIndex, int pageSize, CancellationToken token) {
             pageIndex = pageIndex < 0 ? 0 : pageIndex;
             pageSize = pageSize > 1000 ? 1000 : pageSize;
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var dbSet = concordContext?.Set<T>();
                 if (dbSet is null) return null;
                 return await dbSet.AsNoTracking()?.Where(where)?.OrderBy(order)
@@ -670,9 +669,10 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             return null;
         }
 
-        public async Task<List<T>?> Select<TOrder>([NotNull] Expression<Func<T, bool>> where, Expression<Func<T, TOrder>> order, CancellationToken token) {
+        public async Task<List<T>?> Select<TOrder>([NotNull] Expression<Func<T, bool>> where,
+            [NotNull] Expression<Func<T, TOrder>> order, CancellationToken token) {
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var dbSet = concordContext?.Set<T>();
                 if (dbSet is null) return null;
                 return await dbSet.AsNoTracking()?.Where(where)?.OrderBy(order)
@@ -688,12 +688,13 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             return null;
         }
 
-        public async Task<List<T>?> SelectOrderByDescending<TOrder>([NotNull] Expression<Func<T, bool>> @where, Expression<Func<T, TOrder>> order, int pageIndex, int pageSize,
+        public async Task<List<T>?> SelectOrderByDescending<TOrder>([NotNull] Expression<Func<T, bool>> @where,
+            [NotNull] Expression<Func<T, TOrder>> order, int pageIndex, int pageSize,
             CancellationToken token) {
             pageIndex = pageIndex < 0 ? 0 : pageIndex;
             //pageSize = pageSize > 1000 ? 1000 : pageSize;
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var dbSet = concordContext?.Set<T>();
                 if (dbSet is null) return null;
                 return await dbSet.AsNoTracking()?.Where(where)?.OrderByDescending(order)
@@ -710,9 +711,10 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             return null;
         }
 
-        public async Task<List<T>?> SelectOrderByDescending<TOrder>([NotNull] Expression<Func<T, bool>> where, Expression<Func<T, TOrder>> order, CancellationToken token) {
+        public async Task<List<T>?> SelectOrderByDescending<TOrder>([NotNull] Expression<Func<T, bool>> where,
+            [NotNull] Expression<Func<T, TOrder>> order, CancellationToken token) {
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var dbSet = concordContext?.Set<T>();
                 if (dbSet is null) return null;
                 return await dbSet.AsNoTracking()?.Where(where)?.OrderByDescending(order)
@@ -731,7 +733,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
 
         public async Task<T?> FirstOrDefault([NotNull] Expression<Func<T, bool>> @where, CancellationToken token) {
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var dbSet = concordContext?.Set<T>();
                 if (dbSet is null) return null;
                 return await dbSet.AsNoTracking().Where(where).FirstOrDefaultAsync(token);
@@ -749,7 +751,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
 
         public async Task<int> Total([NotNull] Expression<Func<T, bool>> @where, CancellationToken token) {
             try {
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var dbSet = concordContext?.Set<T>();
                 if (dbSet is null) return 0;
                 return await dbSet.AsNoTracking().Where(where).CountAsync(token);
@@ -773,7 +775,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
                 var excludeOnUpdateColumns = propertyInfos.Where(w => w.GetCustomAttribute<ExcludeOnUpdateAttribute>() != null ||
                                                                       w.GetCustomAttribute<DatabaseGeneratedAttribute>() != null)
                     .Select(s => s.Name)?.ToList();
-                await using var concordContext = await _contextFactory.CreateDbContextAsync(token);
+                await using var concordContext = await ContextFactory.CreateDbContextAsync(token);
                 var strategy = concordContext.Database.CreateExecutionStrategy();
                 return await strategy.ExecuteAsync(async () => {
                     await using (contextTransaction = await concordContext.Database.BeginTransactionAsync(token)) {

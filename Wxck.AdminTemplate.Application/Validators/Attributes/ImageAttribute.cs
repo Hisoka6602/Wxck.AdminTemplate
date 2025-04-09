@@ -14,7 +14,7 @@ namespace Wxck.AdminTemplate.Application.Validators.Attributes {
                 ?.GetChildren()?.Select(s => s.Value)?.ToList();
             if (imageFileTypeList?.Any() == true) {
                 if (value is IFormFile formFile) {
-                    if (imageFileTypeList?.Select(s => s.ToUpper())?.Any(a => new FileInfo(formFile.FileName).Extension
+                    if (imageFileTypeList?.Select(s => s?.ToUpper())?.Any(a => new FileInfo(formFile.FileName).Extension
                             .Replace(".", string.Empty).ToUpper().Equals(a)) != true) {
                         return new ValidationResult($"图片限定格式为：{string.Join("、", imageFileTypeList ?? new List<string?>())}");
                     }

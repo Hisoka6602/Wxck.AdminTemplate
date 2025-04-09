@@ -23,9 +23,6 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
         private static SemaphoreSlim _transactionSlim = new(1);
 
         public LocalRepositoryBase(IDbContextFactory<TContext> contextFactory, IMemoryCache cache) {
-            if (contextFactory == null || cache == null) {
-                return;
-            }
             _contextFactory = contextFactory;
             _cache = cache;
         }
@@ -533,7 +530,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
                 var strategy = concordContext.Database.CreateExecutionStrategy();
                 var dbSet = concordContext?.Set<T>();
                 return await strategy.ExecuteAsync(async () => {
-                    await using (contextTransaction = await concordContext.Database.BeginTransactionAsync(token)) {
+                    await using (contextTransaction = await concordContext!.Database.BeginTransactionAsync(token)) {
                         await concordContext.BulkDeleteAsync(entities, cancellationToken: token);
                         await contextTransaction.CommitAsync(token);
                         return true;
@@ -624,7 +621,8 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             return null;
         }
 
-        public async Task<List<T>?> Select<TOrder>([NotNull] Expression<Func<T, bool>> @where, Expression<Func<T, TOrder>> order, int pageIndex, int pageSize, CancellationToken token) {
+        public async Task<List<T>?> Select<TOrder>([NotNull] Expression<Func<T, bool>> @where,
+            [NotNull] Expression<Func<T, TOrder>> order, int pageIndex, int pageSize, CancellationToken token) {
             pageIndex = pageIndex < 0 ? 0 : pageIndex;
             pageSize = pageSize > 1000 ? 1000 : pageSize;
             try {
