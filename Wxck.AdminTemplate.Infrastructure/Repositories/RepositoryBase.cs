@@ -600,6 +600,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
             return 0;
         }
 
+        [Obsolete("Obsolete")]
         public async Task<int> DeleteCount(int count, Expression<Func<T, bool>> @where, CancellationToken token) {
             try {
                 await using var concordContext = await _contextFactory.CreateDbContextAsync(token);

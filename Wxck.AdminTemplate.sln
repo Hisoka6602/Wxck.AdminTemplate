@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wxck.AdminTemplate.Api", "Wxck.AdminTemplate.Api\Wxck.AdminTemplate.Api.csproj", "{1F5C3969-BE75-40B9-AB59-9A4A24034D00}"
 EndProject
@@ -34,6 +34,17 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wxck.AdminTemplate.CrossCutting", "Wxck.AdminTemplate.CrossCutting\Wxck.AdminTemplate.CrossCutting.csproj", "{CB37AB8E-BAC7-4F02-83ED-BDC2DFF8DE53}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wxck.AdminTemplate.ServiceCluster", "Wxck.AdminTemplate.ServiceCluster\Wxck.AdminTemplate.ServiceCluster.csproj", "{8B3827C9-EA6E-41DA-B9BA-73161621E823}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analyzer", "Analyzer", "{43C3EABB-E910-4E9D-804D-7FD60EEDBE42}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wxck.AdminTemplate.Analyzer", "Wxck.AdminTemplate.Analyzer\Wxck.AdminTemplate.Analyzer\Wxck.AdminTemplate.Analyzer.csproj", "{10F2E89A-E967-43E1-9FB2-F1DEFCAF03A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wxck.AdminTemplate.Analyzer.CodeFixes", "Wxck.AdminTemplate.Analyzer\Wxck.AdminTemplate.Analyzer.CodeFixes\Wxck.AdminTemplate.Analyzer.CodeFixes.csproj", "{A681F691-0B07-4887-AA46-67D921534B51}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{718ACB04-231B-4F85-B5F2-267338759C89}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,6 +88,14 @@ Global
 		{8B3827C9-EA6E-41DA-B9BA-73161621E823}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8B3827C9-EA6E-41DA-B9BA-73161621E823}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B3827C9-EA6E-41DA-B9BA-73161621E823}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10F2E89A-E967-43E1-9FB2-F1DEFCAF03A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10F2E89A-E967-43E1-9FB2-F1DEFCAF03A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10F2E89A-E967-43E1-9FB2-F1DEFCAF03A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10F2E89A-E967-43E1-9FB2-F1DEFCAF03A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A681F691-0B07-4887-AA46-67D921534B51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A681F691-0B07-4887-AA46-67D921534B51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A681F691-0B07-4887-AA46-67D921534B51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A681F691-0B07-4887-AA46-67D921534B51}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,5 +108,7 @@ Global
 		{E4DBC808-11B2-423E-8ACA-0401656A5FED} = {E9313BEC-0119-49A2-BF87-80CAE537A385}
 		{CB37AB8E-BAC7-4F02-83ED-BDC2DFF8DE53} = {D349DC53-063C-4CF7-ACB8-43EC34A7CA04}
 		{8B3827C9-EA6E-41DA-B9BA-73161621E823} = {CF2DD799-5BBC-4235-9C44-537C8FB520D9}
+		{10F2E89A-E967-43E1-9FB2-F1DEFCAF03A0} = {43C3EABB-E910-4E9D-804D-7FD60EEDBE42}
+		{A681F691-0B07-4887-AA46-67D921534B51} = {43C3EABB-E910-4E9D-804D-7FD60EEDBE42}
 	EndGlobalSection
 EndGlobal

@@ -12,6 +12,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.15" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
 	</ItemGroup>
 
@@ -20,10 +21,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Folder Include="Warmup\" />
-		<Folder Include="Filter\" />
 		<Folder Include="BackgroundService\" />
 		<Folder Include="wwwroot\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Wxck.AdminTemplate.Application\Wxck.AdminTemplate.Application.csproj" />
+		<ProjectReference Include="..\Wxck.AdminTemplate.CrossCutting\Wxck.AdminTemplate.CrossCutting.csproj" />
+		<ProjectReference Include="..\Wxck.AdminTemplate.Domain\Wxck.AdminTemplate.Domain.csproj" />
+		<ProjectReference Include="..\Wxck.AdminTemplate.Infrastructure\Wxck.AdminTemplate.Infrastructure.csproj" />
+		<ProjectReference Include="..\Wxck.AdminTemplate.ServiceDefaults\Wxck.AdminTemplate.ServiceDefaults.csproj" />
 	</ItemGroup>
 
 </Project>

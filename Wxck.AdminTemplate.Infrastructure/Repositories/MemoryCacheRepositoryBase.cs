@@ -13,7 +13,7 @@ namespace Wxck.AdminTemplate.Infrastructure.Repositories {
 
     public class MemoryCacheRepositoryBase<T, TContext> : RepositoryBase<T, TContext>, IMemoryCacheRepository<T> where T : class
     where TContext : DbContext {
-        private readonly IDbContextFactory<TContext> _contextFactory;
+        private new readonly IDbContextFactory<TContext> _contextFactory;
         public readonly IMemoryCache _cache;
 
         public MemoryCacheRepositoryBase(IDbContextFactory<TContext> contextFactory, IMemoryCache cache) : base(contextFactory, cache) {

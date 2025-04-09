@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Wxck.AdminTemplate.CrossCutting.EventBus.Events {
 
-    public class MemoryTableChangedEvent {
+    public class MemoryTableChangedEvent : EventArgs {
 
         /// <summary>
         /// 表名称

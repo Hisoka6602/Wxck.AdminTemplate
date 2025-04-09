@@ -67,5 +67,17 @@ namespace Wxck.AdminTemplate.Domain.Entities.Logs {
         /// </summary>
         [Required, Column("TimeSpent")]
         public long TimeSpent { get; set; }
+
+        /// <summary>
+        /// 是否查询数据库（true 表示执行了数据库操作）
+        /// </summary>
+        [Required, Column("IsQueryDb")]
+        public bool IsQueryDb { get; set; }
+
+        /// <summary>
+        /// 数据库查询耗时（单位：毫秒，若未查询则为 0）
+        /// </summary>
+        [Required, Column("QueryDbElapsed")]
+        public long QueryDbElapsed { get; set; }
     }
 }

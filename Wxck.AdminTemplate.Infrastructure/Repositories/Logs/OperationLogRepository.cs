@@ -5,12 +5,15 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Wxck.AdminTemplate.Domain.Attributes;
 using Wxck.AdminTemplate.Domain.Entities.Logs;
 using Wxck.AdminTemplate.Domain.Repositories.Logs;
+using Wxck.AdminTemplate.Domain.Repositories.User;
 using Wxck.AdminTemplate.Infrastructure.EntityConfigurations;
 
 namespace Wxck.AdminTemplate.Infrastructure.Repositories.Logs {
 
+    [InjectableRepository(typeof(IOperationLogRepository))]
     public class OperationLogRepository : RepositoryBase<OperationLogInfoModel, SqlServerContext>, IOperationLogRepository {
 
         public OperationLogRepository(IDbContextFactory<SqlServerContext> contextFactory, IMemoryCache cache) : base(contextFactory, cache) {

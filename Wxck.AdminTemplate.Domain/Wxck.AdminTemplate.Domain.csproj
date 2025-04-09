@@ -14,6 +14,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\Wxck.AdminTemplate.Analyzer\Wxck.AdminTemplate.Analyzer\Wxck.AdminTemplate.Analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<ProjectReference Include="..\Wxck.AdminTemplate.CommsCore\Wxck.AdminTemplate.CommsCore.csproj" />
 		<ProjectReference Include="..\Wxck.AdminTemplate.CrossCutting\Wxck.AdminTemplate.CrossCutting.csproj" />
 	</ItemGroup>
 

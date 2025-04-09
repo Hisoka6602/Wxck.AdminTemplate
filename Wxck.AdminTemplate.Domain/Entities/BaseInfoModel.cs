@@ -2,9 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+#pragma warning disable WxckAdminTemplateAnalyzer
+
 namespace Wxck.AdminTemplate.Domain.Entities {
 
-    public class BaseModel : IEntity<long> {
+    public class BaseInfoModel : IEntity<long> {
 
         [Column("Id"), Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }

@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# WxckAdminTemplateAnalyzer: Type name contains lowercase letters
+dotnet_diagnostic.WxckAdminTemplateAnalyzer.severity = none

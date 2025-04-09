@@ -13,16 +13,15 @@
 		<Folder Include="ErrorHandling\" />
 		<Folder Include="DataFormatting\" />
 		<Folder Include="Encryption\" />
-		<Folder Include="Enums\" />
 		<Folder Include="Sms\" />
 		<Folder Include="SignalR\" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.3" />
-	  <PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="9.0.3" />
-	  <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="9.0.3" />
-	  <PackageReference Include="NetCoreServer" Version="8.0.7" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="9.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Common" Version="9.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="9.0.3" />
+		<PackageReference Include="NetCoreServer" Version="8.0.7" />
 	</ItemGroup>
 
 </Project>
