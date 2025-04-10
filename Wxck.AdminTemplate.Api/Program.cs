@@ -12,6 +12,7 @@ using Wxck.AdminTemplate.Api.Filter;
 using Wxck.AdminTemplate.Api.Warmup;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Wxck.AdminTemplate.Api.Filters;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
@@ -181,8 +182,8 @@ builder.Services.AddSingleton<IAuthenticateService, TokenIAuthenticateService>()
 
 //集中仓储注入
 builder.Services.AddRepositories();
-//集中聚合根注入
 //集中服务注入
+builder.Services.AddApplicationService();
 //预热
 {
     builder.Services.AddTransient<IStartupFilter>(provider =>

@@ -8,7 +8,7 @@ using Wxck.AdminTemplate.Domain.Entities.Logs;
 using Wxck.AdminTemplate.Domain.Repositories.Logs;
 using Wxck.AdminTemplate.Domain.Repositories.User;
 
-namespace Wxck.AdminTemplate.Api.Filter {
+namespace Wxck.AdminTemplate.Api.Filters {
 
     public class LogRequestResponseAttribute : ActionFilterAttribute {
         private readonly ILogger<LogRequestResponseAttribute> _logger;

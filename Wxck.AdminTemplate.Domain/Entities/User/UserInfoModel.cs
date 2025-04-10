@@ -41,6 +41,12 @@ namespace Wxck.AdminTemplate.Domain.Entities.User {
         public string Phone { get; set; } = string.Empty;
 
         /// <summary>
+        /// 邮箱
+        /// </summary>
+        [Required, Column("Email"), InsertOrUpdata]
+        public string Email { get; set; } = string.Empty;
+
+        /// <summary>
         /// 角色
         /// </summary>
         [Required, Column("Role")]
