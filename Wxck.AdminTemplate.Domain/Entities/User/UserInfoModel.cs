@@ -61,7 +61,7 @@ namespace Wxck.AdminTemplate.Domain.Entities.User {
         /// <summary>
         /// 用户图片
         /// </summary>
-        [Column("UserIcon")]
+        [Column("UserIcon"), JsonConverter(typeof(FullFileUrlConverter)),]
         public string? UserIcon { get; set; }
 
         /// <summary>

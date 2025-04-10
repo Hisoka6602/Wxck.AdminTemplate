@@ -9,6 +9,7 @@ using Wxck.AdminTemplate.Application.Services.User;
 using Wxck.AdminTemplate.Application.DTOs.RequestModels.User;
 
 namespace Wxck.AdminTemplate.Api.Controllers {
+
     [Route("api/[controller]")]
     [ApiController, Produces("application/json")]
     public class UserController : ControllerBase {
