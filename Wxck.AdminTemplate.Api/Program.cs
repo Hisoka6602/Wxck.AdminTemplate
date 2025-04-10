@@ -6,6 +6,7 @@ using System.Text.Unicode;
 using NLog.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Encodings.Web;
+using Lazy.Captcha.Core.Generator;
 using Newtonsoft.Json.Serialization;
 using Wxck.AdminTemplate.Api.Filter;
 using Wxck.AdminTemplate.Api.Warmup;
@@ -98,6 +99,8 @@ builder.Services.AddControllers(options => {
     //options.Filters.Add<RiskControlAttribute>();
     //访问记录
     options.Filters.Add<LogRequestResponseAttribute>();
+    //签名校验
+    //options.Filters.Add<SignAttribute>();
 }).AddNewtonsoftJson(options => {
     // 格式化返回 JSON
     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -105,6 +108,19 @@ builder.Services.AddControllers(options => {
     options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Local; // 设置时区为 UTC
     options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
     options.SerializerSettings.Formatting = Formatting.Indented;
+});
+//注册图形验证码
+builder.Services.AddCaptcha(option => {
+    option.CaptchaType = CaptchaType.ARITHMETIC; // 验证码类型
+    option.CodeLength = 1;                            // 验证码长度
+    option.ExpirySeconds = 60;// 验证码有效期（分钟）
+    option.IgnoreCase = true;
+    option.ImageOption.Animation = true; // 是否启用动画
+    option.ImageOption.FrameDelay = 300; // 每帧延迟,Animation=true时有效, 默认30
+    option.ImageOption.Width = 150; // 验证码宽度
+    option.ImageOption.Height = 50; // 验证码高度
+    option.ImageOption.BackgroundColor = SkiaSharp.SKColors.White; // 验证码背景色
+    option.ImageOption.TextBold = true;// 粗体，该配置2.0.3新增
 });
 
 //SignalR
