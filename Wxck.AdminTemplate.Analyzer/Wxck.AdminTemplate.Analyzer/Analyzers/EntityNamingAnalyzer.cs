@@ -30,12 +30,13 @@ namespace Wxck.AdminTemplate.Analyzer.Analyzers {
         private static readonly DiagnosticDescriptor AttributeRule = new(
             id: AttributeDiagnosticId,
             title: "Attribute 命名规则",
-            messageFormat: "位于 Attributes 文件夹下的类 '{0}' 必须以 'Attribute' 结尾且继承自 System.Attribute",
+            messageFormat: "位于 Attributes 文件夹下的类 '{0}' 必须以 'Attribute' 结尾且继承自 System.Attribute 或其派生类",
             category: "Naming",
             defaultSeverity: DiagnosticSeverity.Error,
             isEnabledByDefault: true);
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule, AttributeRule);
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
+            ImmutableArray.Create(Rule, AttributeRule);
 
         public override void Initialize(AnalysisContext context) {
             context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
@@ -46,16 +47,13 @@ namespace Wxck.AdminTemplate.Analyzer.Analyzers {
         private void AnalyzeNamedType(SymbolAnalysisContext context) {
             var namedType = (INamedTypeSymbol)context.Symbol;
 
-            // 只检查 class 类型
             if (namedType.TypeKind != TypeKind.Class)
                 return;
 
-            // 获取文件路径
             var path = namedType.Locations.FirstOrDefault()?.SourceTree?.FilePath;
             if (string.IsNullOrEmpty(path))
                 return;
 
-            // 分割路径目录，用于精确判断目录名
             var pathParts = path.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
             bool isInEntities = pathParts.Any(p => string.Equals(p, "Entities", StringComparison.OrdinalIgnoreCase));
@@ -69,14 +67,31 @@ namespace Wxck.AdminTemplate.Analyzer.Analyzers {
             }
 
             if (isInAttributes) {
-                var isAttribute = namedType.BaseType?.ToDisplayString() == "System.Attribute";
+                var isAttributeOrDerived = InheritsFromAttribute(namedType);
                 var nameCorrect = namedType.Name.EndsWith("Attribute");
 
-                if (!isAttribute || !nameCorrect) {
+                if (!isAttributeOrDerived || !nameCorrect) {
                     var diagnostic = Diagnostic.Create(AttributeRule, namedType.Locations[0], namedType.Name);
                     context.ReportDiagnostic(diagnostic);
                 }
             }
+        }
+
+        // 检查是否继承自 System.Attribute 或其派生类（递归检查所有基类）
+        private static bool InheritsFromAttribute(INamedTypeSymbol symbol) {
+            var baseType = symbol.BaseType;
+            while (baseType != null) {
+                if (IsAttributeType(baseType))
+                    return true;
+                baseType = baseType.BaseType;
+            }
+            return false;
+        }
+
+        private static bool IsAttributeType(INamedTypeSymbol symbol) {
+            var fullName = symbol.ToDisplayString();
+            return fullName == "System.Attribute" ||
+                   fullName == "System.ComponentModel.DataAnnotations.ValidationAttribute";
         }
     }
 }

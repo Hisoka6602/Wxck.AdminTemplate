@@ -8,9 +8,15 @@ namespace Wxck.AdminTemplate.Domain.Entities {
 
     public class BaseInfoModel : IEntity<long> {
 
+        /// <summary>
+        /// 主键ID
+        /// </summary>
         [Column("Id"), Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
+        /// <summary>
+        /// 创建时间
+        /// </summary>
         [Column("CreatedTime")]
         public DateTime CreatedTime { get; set; } = DateTime.Now;
 

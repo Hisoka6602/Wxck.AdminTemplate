@@ -10,6 +10,12 @@ namespace Wxck.AdminTemplate.CrossCutting.Auth.Jwt {
 
     public interface IAuthenticateService {
 
+        /// <summary>
+        /// 验证用户登录
+        /// </summary>
+        /// <param name="request"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
         bool IsAuthenticated(LoginRequestDto request, out string token);
 
         /// <summary>
