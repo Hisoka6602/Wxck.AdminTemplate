@@ -4,6 +4,7 @@ using System.Text;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.Extensions.Hosting;
 using Wxck.AdminTemplate.Domain.Attributes;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -72,6 +73,26 @@ namespace Wxck.AdminTemplate.ServiceDefaults {
                     if (serviceType == null) continue;
 
                     services.AddSingleton(serviceType, implType);
+                }
+            }
+
+            return services;
+        }
+
+        public static IServiceCollection AddAutoHostedServices(this IServiceCollection services) {
+            var assemblies = LoadDllAssemblies("ServiceCluster");
+
+            foreach (var assembly in assemblies) {
+                // 获取所有带有 [HostedService] 特性的 BackgroundService 子类
+                var typesWithAttribute = assembly.GetTypes()
+                    .Where(t => t is { IsClass: true, IsAbstract: false }
+                                && typeof(BackgroundService).IsAssignableFrom(t)
+                                && t.GetCustomAttribute<HostedServiceAttribute>() != null);
+
+                foreach (var type in typesWithAttribute) {
+                    //services.AddHostedService(type);
+                    services.AddSingleton(typeof(IHostedService), provider =>
+                        (IHostedService)ActivatorUtilities.CreateInstance(provider, type));
                 }
             }
 

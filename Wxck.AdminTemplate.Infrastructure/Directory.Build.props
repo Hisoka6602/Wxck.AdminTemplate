@@ -1,0 +1,5 @@
+<Project>
+	<Target Name="CreateSymlinkForAppSettings" AfterTargets="Build">
+		<Exec Command="IF NOT EXIST &quot;$(MSBuildProjectDirectory)\appsettings.json&quot; mklink &quot;$(MSBuildProjectDirectory)\appsettings.json&quot; &quot;$(SolutionDir)Wxck.AdminTemplate.Api\appsettings.json&quot;" />
+	</Target>
+</Project>

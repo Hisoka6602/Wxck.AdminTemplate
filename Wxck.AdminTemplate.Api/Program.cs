@@ -184,6 +184,8 @@ builder.Services.AddSingleton<IAuthenticateService, TokenIAuthenticateService>()
 builder.Services.AddRepositories();
 //集中服务注入
 builder.Services.AddApplicationService();
+//集中后台任务注入
+builder.Services.AddAutoHostedServices();
 //预热
 {
     builder.Services.AddTransient<IStartupFilter>(provider =>

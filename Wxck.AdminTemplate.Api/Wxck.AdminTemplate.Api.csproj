@@ -27,9 +27,11 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Wxck.AdminTemplate.Analyzer\Wxck.AdminTemplate.Analyzer\Wxck.AdminTemplate.Analyzer.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 		<ProjectReference Include="..\Wxck.AdminTemplate.Application\Wxck.AdminTemplate.Application.csproj" />
+		<ProjectReference Include="..\Wxck.AdminTemplate.CommsCore\Wxck.AdminTemplate.CommsCore.csproj" />
 		<ProjectReference Include="..\Wxck.AdminTemplate.CrossCutting\Wxck.AdminTemplate.CrossCutting.csproj" />
 		<ProjectReference Include="..\Wxck.AdminTemplate.Domain\Wxck.AdminTemplate.Domain.csproj" />
 		<ProjectReference Include="..\Wxck.AdminTemplate.Infrastructure\Wxck.AdminTemplate.Infrastructure.csproj" />
+		<ProjectReference Include="..\Wxck.AdminTemplate.ServiceCluster\Wxck.AdminTemplate.ServiceCluster.csproj" />
 		<ProjectReference Include="..\Wxck.AdminTemplate.ServiceDefaults\Wxck.AdminTemplate.ServiceDefaults.csproj" />
 	</ItemGroup>
 
